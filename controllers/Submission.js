@@ -73,7 +73,7 @@ export const createSubmission = async (req, res) => {
     const extRecommendationLetter = path.extname(fileRecommendationLetter.name);
     const extApplicationLetter = path.extname(fileApplicationLetter.name);
 
-    const allowedTypes = [".png", ".jpg", ".jpeg", ".pdf", ".docx"];
+    const allowedTypes = [".pdf"];
 
     if (
       !allowedTypes.includes(extKTP.toLowerCase()) ||
