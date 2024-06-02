@@ -74,7 +74,7 @@ export const updateUser = async (req, res) => {
 
   if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
 
-  const { name, nip, password, amountTGR, role, isTGR } = req.body;
+  const { name, nip, password, amountTGR, role, isTGR, status } = req.body;
 
   // Mengecek apakah password berubah
   let hashPassword;
@@ -95,6 +95,7 @@ export const updateUser = async (req, res) => {
       role: role !== undefined ? role : user.role,
       amountTGR : amountTGR !== undefined ? amountTGR : user.amountTGR,
       isTGR: isTGRChanged ? isTGR : user.isTGR,
+      status : status
     };
 
     await User.update(updatedData, {
