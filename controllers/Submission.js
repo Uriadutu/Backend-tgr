@@ -41,6 +41,9 @@ export const getSubmissionByUser = async (req, res) => {
       where: {
         id_user: req.params.id,
       },
+      include : {
+        model : Users
+      }
       
     });
     if (!response) {

@@ -12,6 +12,20 @@ export const getUsers = async (req, res) => {
   }
 };
 
+export const getUserbyRole = async(req, res) => {
+  try {
+    const response = await User.findAll({
+      where : { 
+        role : req.params.role,
+      }
+    })
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(404).json({msg : "data tidak ditemukan"});
+    
+  }
+}
+
 export const getUserById = async (req, res) => {
   try {
     const response = await User.findOne({
