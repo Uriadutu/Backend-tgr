@@ -151,3 +151,23 @@ export const accSlip = async (req, res) => {
     res.status(500).json({ message: "Failed to accept slip" });
   }
 };
+
+export const deleteSlip = async(req, res) => {
+  const slip = await SlipModel.findOne({
+    where : {
+      id : req.params.id
+    }
+  })
+
+  if (!slip) {
+    res.status(404).json({msg : "data tidak ditemukan"})
+  }
+  try {
+      const filepath = `./public/slip/${slip.fileName}`;
+      fs.unlinkSync(filepath);
+      await slip.destroy();
+      res.status(200).json({ msg: "Lisensi Deleted Successfuly" });
+    } catch (error) {
+      console.log(error.message);
+    }
+}
