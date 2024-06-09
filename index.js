@@ -10,7 +10,7 @@ import SKPD from "./routes/SKPDRoute.js";
 import SubmissionRoute from "./routes/SubmissionRoute.js";
 import SlipRoute from "./routes/SlipRoute.js"
 import fileupload from "express-fileupload";
-// import fileUpload from "express-fileupload";
+import SuperAdminRoute from "./routes/SuperAdminRoute.js"
 
 dotenv.config();
 
@@ -52,6 +52,7 @@ app.use(AuthRoute);
 app.use(SKPD);
 app.use(SubmissionRoute);
 app.use(SlipRoute);
+app.use(SuperAdminRoute);
 
 // store.sync();
 

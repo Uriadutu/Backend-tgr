@@ -20,11 +20,10 @@ export const getSubmissionById = async (req, res) => {
     const response = await Submission.findOne({
       where: {
         id_user: req.params.id,
-      }, 
-      include : {
-        model : Users
-      }
-      
+      },
+      include: {
+        model: Users,
+      },
     });
     if (!response) {
       return res.status(404).json({ message: "Submission not found" });
@@ -41,10 +40,9 @@ export const getSubmissionByUser = async (req, res) => {
       where: {
         id_user: req.params.id,
       },
-      include : {
-        model : Users
-      }
-      
+      include: {
+        model: Users,
+      },
     });
     if (!response) {
       return res.status(404).json({ message: "Submission not found" });
@@ -195,23 +193,49 @@ export const updateSubmissionById = async (req, res) => {
 
 // Delete submission by ID
 export const deleteSubmissionById = async (req, res) => {
-  const { id } = req.params;
+  const subs = await Submission.findOne({
+    where: {
+      id: req.params.id,
+    },
+  });
+  if (!subs) {
+    return res.status(404).json({ msg: "data tidak ditemukan" });
+  }
   try {
-    const submission = await Submission.findByPk(id);
-    if (!submission) {
-      return res.status(404).json({ message: "Submission not found" });
-    }
-    await submission.destroy();
-    res.json({ message: "Submission deleted successfully" });
+    const fileApp = `./public/uploads/app/${subs.applicationLetterFileName}`;
+    const fileKTP = `./public/uploads/ktp/${subs.ktpFileName}`;
+    const fileRekom = `./public/uploads/rekom/${subs.recommendationLetterFileName}`;
+
+    // Function to delete a file and handle the error
+    const deleteFile = (filePath) => {
+      return new Promise((resolve, reject) => {
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error(`Error deleting file ${filePath}: ${err.message}`);
+            return reject(err);
+          }
+          resolve();
+        });
+      });
+    };
+
+    // Delete all files concurrently
+    await Promise.all([
+      deleteFile(fileApp),
+      deleteFile(fileKTP),
+      deleteFile(fileRekom)
+    ]);
+
+    await subs.destroy();
+    res.status(200).json({ msg: "Subs Deleted Successfully" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to delete submission" });
+    console.log(error.message);
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
-
 //Acc Submission
 export const accSubmission = async (req, res) => {
-  const {id} = req.body
+  const { id } = req.body;
   try {
     const submission = await Submission.findOne({
       where: {

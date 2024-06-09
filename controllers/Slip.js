@@ -166,7 +166,7 @@ export const deleteSlip = async(req, res) => {
       const filepath = `./public/slip/${slip.fileName}`;
       fs.unlinkSync(filepath);
       await slip.destroy();
-      res.status(200).json({ msg: "Lisensi Deleted Successfuly" });
+      res.status(200).json({ msg: "Slip Deleted Successfuly" });
     } catch (error) {
       console.log(error.message);
     }

@@ -1,13 +1,30 @@
+import SuperAdmin from "../models/SuperAdminModels.js";
 import User from "../models/UserModel.js";
 import argon2 from "argon2";
 
 export const login = async (req, res) => {
-  const user = await User.findOne({
+  let user;
+  
+  const userBiasa = await User.findOne({
     where: {
       nip: req.body.nip,
     },
   });
+
+  const SuperAdmin = await SuperAdmin.findOne({
+    where: {
+      nip: req.body.nip,
+    },
+  });
+
+  if(userBiasa) {
+    user = userBiasa;
+  } else if (SuperAdmin) {
+    user = SuperAdmin
+  }
+
   if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+
   const match = await argon2.verify(user.password, req.body.password);
   if (!match) return res.status(400).json({ msg: "Kata sandi salah" });
   req.session.userId = user.uuid;
@@ -24,12 +41,28 @@ export const me = async (req, res) => {
   if (!req.session.userId) {
     return res.status(401).json({ msg: "Mohon login ke akun Anda!" });
   }
-  const user = await User.findOne({
+
+  let user;
+
+  const userBiasa = await User.findOne({
     attributes: ["id", "status", "uuid", "name", "nip", "role", "isTGR", "amountTGR"],
     where: {
       uuid: req.session.userId,
     },
   });
+  const superAdmin = await User.findOne({
+    attributes: ["id", "uuid", "name", "nip", "role"],
+    where: {
+      uuid: req.session.userId,
+    },
+  });
+
+  if(userBiasa) {
+    user = userBiasa
+  } else if (SuperAdmin) {
+    user = superAdmin
+  }
+
   if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
   res.status(200).json(user);
 };
