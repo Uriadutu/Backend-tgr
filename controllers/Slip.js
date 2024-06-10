@@ -87,6 +87,7 @@ export const createSlip = async (req, res) => {
         url: url,
         status: "Diproses",
         userId: req.userId,
+        keterangan : "-",
       });
       res.status(201).json({ message: "Slip created successfully with PDF" });
     } catch (error) {
@@ -98,16 +99,18 @@ export const createSlip = async (req, res) => {
 
 //Reject slip
 export const rejectSlip = async (req, res) => {
+  const {keterangan} = req.body
   try {
     const slip = await SlipModel.findOne({
       where: {
         id: req.params.id,
       },
     });
+
     if (!slip) {
       return res.status(404).json({ message: "Slip not found" });
     }
-    await slip.update({ status: "Ditolak" });
+    await slip.update({ status: "Ditolak", keterangan :  keterangan});
     res.json({ message: "Slip rejected successfully" });
   } catch (error) {
     console.log(error);
@@ -124,6 +127,7 @@ export const accSlip = async (req, res) => {
         id: req.params.id,
       },
     });
+    
     if (!slip) {
       return res.status(404).json({ message: "Slip not found" });
     }
@@ -143,7 +147,7 @@ export const accSlip = async (req, res) => {
       status: "BELUM MELAKUKAN PENGAJUAN",
     });
 
-    await slip.update({ status: "Diterima" });
+    await slip.update({ status: "Diterima", keterangan : "-" });
 
     res.json({ message: "Slip accepted successfully" });
   } catch (error) {
@@ -166,7 +170,7 @@ export const deleteSlip = async(req, res) => {
       const filepath = `./public/slip/${slip.fileName}`;
       fs.unlinkSync(filepath);
       await slip.destroy();
-      res.status(200).json({ msg: "Slip Deleted Successfuly" });
+      res.status(200).json({ msg: "Lisensi Deleted Successfuly" });
     } catch (error) {
       console.log(error.message);
     }

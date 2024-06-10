@@ -36,6 +36,13 @@ const Slip = db.define(
         notEmpty: true,
       },
     },
+    keterangan: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
   },
   {
     freezeTableName: true,
