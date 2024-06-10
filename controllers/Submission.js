@@ -19,7 +19,7 @@ export const getSubmissionById = async (req, res) => {
   try {
     const response = await Submission.findOne({
       where: {
-        id_user: req.params.id,
+        uuid: req.params.id,
       }, 
       include : {
         model : Users
@@ -122,7 +122,7 @@ export const createSubmission = async (req, res) => {
       applicationLetterUrl: urlApplicationLetter,
       applicationLetterFileName: namaApplicationLetter,
       status: "Diproses",
-
+      keterangan : "-",
       userId: req.userId,
     });
 
@@ -238,7 +238,7 @@ export const accSubmission = async (req, res) => {
       isTGR: false,
     });
 
-    await submission.update({ status: "Diterima" });
+    await submission.update({ status: "Diterima", keterangan : "-" });
     res.json({ message: "Pengajuan Berhasil Diterima" });
   } catch (error) {
     console.error(error);
@@ -247,6 +247,7 @@ export const accSubmission = async (req, res) => {
 };
 
 export const rejectSubmission = async (req, res) => {
+  const {keterangan} = req.body
   try {
     const submission = await Submission.findOne({
       where: {
@@ -256,7 +257,7 @@ export const rejectSubmission = async (req, res) => {
     if (!submission) {
       return res.status(404).json({ message: "Slip not found" });
     }
-    await submission.update({ status: "Ditolak" });
+    await submission.update({ status: "Ditolak", keterangan : keterangan });
     res.json({ message: "Pengajuan Berhasil Ditolak" });
   } catch (error) {
     console.log(error);

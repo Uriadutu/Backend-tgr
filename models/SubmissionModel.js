@@ -64,6 +64,13 @@ const Submission = db.define(
         notEmpty: true,
       },
     },
+    keterangan: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     id_user : {
       type: DataTypes.INTEGER,
       allowNull: false,
